@@ -13,9 +13,9 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+         $request->user()->authorizeRoles(['employee', 'manager']);
          $shops = Shop::all();
 
                 return view('shops.index', compact('shops')
@@ -43,13 +43,15 @@ class ShopController extends Controller
     public function store(Request $request)
     {
         Shop::create($request->all());
-        return redirect(route('shops.index'));
+        return redirect(route('shops.index'))
+            ->with('success', 'Продукт успешно создан');
+    }
 
         /* dd($request->all());
          $shop = new Shop();
          $shop->name=$request->input('name');
-         $shop->save;*/
     }
+         $shop->save;*/
 
     /**
      * Display the specified resource.
@@ -90,7 +92,8 @@ class ShopController extends Controller
         Shop::find($shop->id)->update($request->all());
 
         // редирект на список продуктов
-        return redirect(route('shops.index'));
+        return redirect(route('shops.index'))
+            ->with('updated', 'Продукт успешно обновлен');
         /*Shop::update($request->all());
         return redirect(route('shops.index'));*/
 
@@ -105,7 +108,7 @@ class ShopController extends Controller
     public function destroy(Request $request, Shop $shop)
     {
         $request->user()->authorizeRoles('manager');
-        Product::find($shop->id)->delete();
+        Shop::find($shop->id)->delete();
 
         // редирект на список продуктов
         return redirect(route('shops.index'));
