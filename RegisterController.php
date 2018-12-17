@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+/*use Illuminate\Foundation\Auth\Role;*/
+
 
 class RegisterController extends Controller
 {
@@ -69,6 +72,8 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
         ]);
         $user->roles()->attach(Role::where('name', 'employee')->first());
+        session('message','Here is a default message');
         return $user;
     }
+
 }
